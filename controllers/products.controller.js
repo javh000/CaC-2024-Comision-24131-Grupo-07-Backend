@@ -89,7 +89,6 @@ const updateProduct = (req, res) => {
 };
 
 // Borrar registro
-
 const deleteProduct = (req, res) => {
   const { id } = req.params;
 
