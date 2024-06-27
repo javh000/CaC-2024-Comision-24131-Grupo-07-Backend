@@ -158,7 +158,7 @@ const updateUser = (req, res) => {
     const { user_email, user_password } = req.body
     const userQuery = "SELECT * FROM users WHERE user_email = ?"
 
-    db.query(userQuery, [user_email], (error, results) => {
+    db.query(userQuery, [user_email], async (error, results) => {
         if (error) {
             return res.status(500).json({
                 message: "No se pudo actualizar el usuario"
@@ -170,8 +170,10 @@ const updateUser = (req, res) => {
                 message: "No se encontro al usuario"
             })
         }
+        const passwordHash = await bcrypt.hash(user_password, 8);
+
         const updateQuery = "UPDATE users SET user_password = ? WHERE user_email = ?"
-        db.query(updateQuery, [user_password, user_email], (error, results) => {
+        db.query(updateQuery, [passwordHash, user_email], (error, results) => {
             if (error) {
                 return res.status(400).json({
                     message: "Error al actualizar la contraseña"
