@@ -33,13 +33,13 @@ const showProduct = (req, res) => {
 
 // Agregar un producto
 const storeProduct = (req, res) => {
-  const { name, description, price, category_id, image_url } = req.body;
+  const { name, description, price, stock, category_id } = req.body;
   const sql =
-    "INSERT INTO products (name, description, price, category_id, image_url) VALUES (?, ?, ?, ?,?)";
+    "INSERT INTO products (name, description, price, stock, category_id) VALUES (?, ?, ?, ?, ?)";
 
   db.query(
     sql,
-    [name, description, price, category_id, image_url],
+    [name, description, price, stock, category_id],
     (error, result) => {
       if (error) {
         return res.status(500).json({
@@ -55,18 +55,16 @@ const storeProduct = (req, res) => {
 };
 
 // Modificar un registro (producto)
-
 const updateProduct = (req, res) => {
   const { id } = req.params;
-  const { name, description, price, category_id, image_url } = req.body;
-  // console.log(id);
+  const { name, description, price, stock, category_id } = req.body;
 
   const sql =
-    "UPDATE products SET name = ?, description = ?, price = ?, category_id = ?, image_url = ? WHERE product_id = ?";
+    "UPDATE products SET name = ?, description = ?, price = ?, stock = ?, category_id = ? WHERE product_id = ?";
 
   db.query(
     sql,
-    [name, description, price, category_id, image_url, id],
+    [name, description, price, stock, category_id, id],
     (error, result) => {
       if (error) {
         return res.status(500).json({
@@ -81,8 +79,6 @@ const updateProduct = (req, res) => {
 
       const product = { ...req.body, ...req.params };
 
-      console.log(result);
-
       res.status(201).json(product);
     }
   );
@@ -94,7 +90,6 @@ const deleteProduct = (req, res) => {
 
   const sql = "DELETE FROM products WHERE product_id = ?";
   db.query(sql, [id], (error, result) => {
-    console.log(id, result);
     if (error) {
       return res.status(500).json({
         error:
